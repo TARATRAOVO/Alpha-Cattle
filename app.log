@@ -1,0 +1,104 @@
+
+Attaching package: ‘shinydashboard’
+
+The following object is masked from ‘package:graphics’:
+
+    box
+
+Loading required package: methods
+Loading required package: ggplot2
+
+Attaching package: ‘plotly’
+
+The following object is masked from ‘package:ggplot2’:
+
+    last_plot
+
+The following object is masked from ‘package:stats’:
+
+    filter
+
+The following object is masked from ‘package:graphics’:
+
+    layout
+
+
+Attaching package: ‘shinyjs’
+
+The following object is masked from ‘package:shiny’:
+
+    runExample
+
+The following objects are masked from ‘package:methods’:
+
+    removeClass, show
+
+
+Attaching package: ‘shinyWidgets’
+
+The following object is masked from ‘package:shinyjs’:
+
+    alert
+
+── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.1.2     ✔ readr     2.1.4
+✔ forcats   1.0.0     ✔ tibble    3.2.1
+✔ lubridate 1.9.2     ✔ tidyr     1.3.0
+✔ purrr     1.0.1     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter()   masks plotly::filter(), stats::filter()
+✖ dplyr::lag()      masks stats::lag()
+✖ lubridate::show() masks shinyjs::show(), methods::show()
+ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+
+Attaching package: ‘shinyalert’
+
+The following object is masked from ‘package:shinyjs’:
+
+    runExample
+
+The following object is masked from ‘package:shinyBS’:
+
+    closeAlert
+
+The following object is masked from ‘package:shiny’:
+
+    runExample
+
+
+Attaching package: ‘shinydashboardPlus’
+
+The following object is masked from ‘package:shinyWidgets’:
+
+    progressBar
+
+The following objects are masked from ‘package:shinydashboard’:
+
+    box, dashboardHeader, dashboardPage, dashboardSidebar, messageItem,
+    notificationItem, taskItem
+
+The following object is masked from ‘package:graphics’:
+
+    box
+
+
+Attaching package: ‘shinyLP’
+
+The following object is masked from ‘package:shinyalert’:
+
+    runExample
+
+The following object is masked from ‘package:shinyWidgets’:
+
+    list_group
+
+The following object is masked from ‘package:shinyjs’:
+
+    runExample
+
+The following object is masked from ‘package:shiny’:
+
+    runExample
+
+
+Listening on http://127.0.0.1:7956
