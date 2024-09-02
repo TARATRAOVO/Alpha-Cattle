@@ -31,7 +31,20 @@ homePanel<-tabPanel(
     "
   )),
  div(class = "inlay", style = "height:650px;width:100%;background-color: white;"),
-
+ div(style="text-align:center;margin-bottom:80px;",fluidRow(
+   column(2,offset = 2, panel_div(class_type = "primary", panel_title = "Phenotype processing",
+                       content = "Users can quickly filter their data, make the phenotypic data suitable for genomic selection,
+                       and obtain summary data and frequency distribution images for each trait.")),
+   column(2, panel_div(class_type = "default", panel_title = "Regular genomic selection and prediction",
+                                  content = "HCGSP supports  multiple methods of genomic selection and prediction, including GBLUP, 
+                       ssGBLUP and BLUP, users can choose the parameters and variables of the model simply.")),
+   column(2, panel_div(class_type = "primary", panel_title = "Joint genomic selection",
+                                  content = "Combine your data with data from our database into a combined population to increase 
+                       the number of reference population and thus improve the genomic selection accuracy.")),
+   column(2, panel_div(class_type = "default", panel_title = "CPI and GCPI Estimation",
+                                  content = "User uploaded genomic and phenotypic data can be analyzed with the Reference Group to 
+                      estimate and predict CPI(China Performance Index) and  GCPI(Genomic China Performance Index).")),
+ )),
  
 column(
    width = 8,offset = 2,
