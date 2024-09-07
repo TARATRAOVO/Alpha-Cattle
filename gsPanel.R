@@ -1,5 +1,6 @@
 gsPanel<-tabPanel(
   title = "Regular Genomic Selection",
+  value = "RegularGenomicSelectionPage",
   div(class = "inlay", style = "height:70px;width:100%;background-color: white;"),
   column(
     width=12,

@@ -178,7 +178,7 @@ cpiPanel<-tabPanel(
       mod_comp_box1(id="cpi_cov1",label="Fixed effect (covariate) :", title="Covariate",
                   content="You can specify multiple covariate varibles which are also considered fixed effects"),
       mod_comp_box1(id="cpi_gen1",label="Random effect (genetic) :", title="Genetic random effects",
-                  content="This is for the  random effect that the pedigree-based or genotype-based or their combined relationship matrix is exerted on. Please note that HCGSP now only support unique random genetic effect. You may supply more varibles but only the first one is considered"),
+                  content="This is for the  random effect that the pedigree-based or genotype-based or their combined relationship matrix is exerted on. Please note that Alpha-Cattle now only support unique random genetic effect. You may supply more varibles but only the first one is considered"),
       mod_comp_box1(id="cpi_rnd1",label="Random effect (other) :", title="Non-genetic random effects",
                   content="This is for the non-genetic random effect, such as permenent environmental effect, dam effect, etc.",
                   placement="left")
@@ -207,7 +207,7 @@ cpiPanel<-tabPanel(
       mod_comp_box2(id="cpi_cov2",label="Fixed effect (covariate) :", title="Covariate",
                   content="You can specify multiple covariate varibles which are also considered fixed effects"),
       mod_comp_box2(id="cpi_gen2",label="Random effect (genetic) :", title="Genetic random effects",
-                  content="This is for the  random effect that the pedigree-based or genotype-based or their combined relationship matrix is exerted on. Please note that HCGSP now only support unique random genetic effect. You may supply more varibles but only the first one is considered"),
+                  content="This is for the  random effect that the pedigree-based or genotype-based or their combined relationship matrix is exerted on. Please note that Alpha-Cattle now only support unique random genetic effect. You may supply more varibles but only the first one is considered"),
       mod_comp_box2(id="cpi_rnd2",label="Random effect (other) :", title="Non-genetic random effects",
                   content="This is for the non-genetic random effect, such as permenent environmental effect, dam effect, etc.",
                   placement="left")

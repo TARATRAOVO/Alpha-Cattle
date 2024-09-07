@@ -10,6 +10,7 @@
                    background-color: #2c3e50;
                   }")),
    title = "Phenotype processing",
+   value = "PhenotypeProcessingPage",
    div(class = "inlay", style = "height:70px;width:100%;background-color: white;"),
    column(
      width=12,
@@ -28,12 +29,13 @@
                inputId = "phe_colname",
                label = "Select the traits to be analyzed:", 
                multiple = TRUE,
-               choices = colnames(demo_gs_phe_dat))),
+               choices = colnames(demo_gs_phe_dat)
+          )),
           bsPopover(id="phe_colname_BS", 
                     title="Select the traits to be filtered :", 
                     content="You can select one or more traits and we will filter each trait",
                     placement="right",trigger="hover", options = list(container = "body")),
-         ###½«0×ª»»ÎªNA£¬¹ýÂËÊ±ÊÇ·ñºöÂÔNA
+         ###ï¿½ï¿½0×ªï¿½ï¿½ÎªNAï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½Ç·ï¿½ï¿½ï¿½ï¿½NA
          div(id="trans0_BS", style="margin-top:50px",radioButtons("trans0","Trans 0 to NA:",choices = c("Yes","No"),selected = "Yes")),
          bsPopover(id="trans0_BS", 
                    title="Verify that the 0 value is converted to NA :", 

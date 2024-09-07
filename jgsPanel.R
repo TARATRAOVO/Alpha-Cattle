@@ -1,6 +1,6 @@
 jgsPanel<-tabPanel(
   title = "Joint Genomic Selection",
-
+  value = "JointGenomicSelectionPage",
   div(class = "inlay", style = "height:70px;width:100%;background-color: white;"),
   column(
     width=12,

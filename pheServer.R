@@ -8,10 +8,7 @@ pheServer<-function(input,output,session){
     })
   
   observeEvent(input$phe_upload,{
-
     updatePickerInput(session = session,inputId="phe_colname",choices=phe_name())
-    
-    
   })
 
 
@@ -60,7 +57,7 @@ pheServer<-function(input,output,session){
 
     return(dat)
   })
-  ###ÉÏ´«ÎÄ¼þÖ®ºó£¬Á¢Âí»­³öÍ¼Æ¬ºÍtable
+  ###ï¿½Ï´ï¿½ï¿½Ä¼ï¿½Ö®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¼Æ¬ï¿½ï¿½table
   ##table
 
   output$phe_dat<-DT::renderDataTable({
@@ -82,7 +79,7 @@ pheServer<-function(input,output,session){
       SD=phe_summary_sd)
     phe
   })
-  ###°ÑÊÇnumericµÄÁÐ»­³öÀ´
+  ###ï¿½ï¿½ï¿½ï¿½numericï¿½ï¿½ï¿½Ð»ï¿½ï¿½ï¿½ï¿½ï¿½
 
   output$plot<-renderCombineWidgets({
 

@@ -11,9 +11,12 @@ homePanel<-tabPanel(
   column(
     width = 8,offset = 2,
         div(class = "jumbotron",
-            h1("HCGSP"), p("Holstein Cattle Genomic Selection and Prediction(HCGSP) provides
-              a platform and software to enable multiple modes of genomic selection and Prediction in Holstein Cattles."), p(a(class = "btn btn-primary btn-lg action-button shiny-bound-input", id='tabBut', "Learn more")))
-
+            h1("Alpha-Cattle"), 
+            p("Alpha-Cattle provides
+              a platform and software to enable multiple modes of genomic selection and Prediction in Holstein Cattles."), 
+            p("Alpha-Cattle 提供支持多模式基因组选择、荷斯坦奶牛遗传评估及性状预测的平台与软件。",style='font-size:20px; color:gray; margin-top:10px;'),
+            p(a(class = "btn btn-primary btn-lg action-button shiny-bound-input", id='tabBut', "Learn more"))
+            )
 
    ),
   #imageOutput("pic"),
@@ -31,20 +34,44 @@ homePanel<-tabPanel(
     "
   )),
  div(class = "inlay", style = "height:650px;width:100%;background-color: white;"),
- div(style="text-align:center;margin-bottom:80px;",fluidRow(
-   column(2,offset = 2, panel_div(class_type = "primary", panel_title = "Phenotype processing",
-                       content = "Users can quickly filter their data, make the phenotypic data suitable for genomic selection,
-                       and obtain summary data and frequency distribution images for each trait.")),
-   column(2, panel_div(class_type = "default", panel_title = "Regular genomic selection and prediction",
-                                  content = "HCGSP supports  multiple methods of genomic selection and prediction, including GBLUP, 
-                       ssGBLUP and BLUP, users can choose the parameters and variables of the model simply.")),
-   column(2, panel_div(class_type = "primary", panel_title = "Joint genomic selection",
-                                  content = "Combine your data with data from our database into a combined population to increase 
-                       the number of reference population and thus improve the genomic selection accuracy.")),
-   column(2, panel_div(class_type = "default", panel_title = "CPI and GCPI Estimation",
-                                  content = "User uploaded genomic and phenotypic data can be analyzed with the Reference Group to 
-                      estimate and predict CPI(China Performance Index) and  GCPI(Genomic China Performance Index).")),
- )),
+div(style="text-align:center;margin-bottom:80px;", fluidRow(
+  column(2, offset = 2,
+        div(
+          style = "cursor: pointer;",  # 更改光标样式为手指
+          onclick = "Shiny.setInputValue('btn_phenotype', Math.random());",  # 设置输入值
+          panel_div(class_type = "primary", panel_title = "Phenotype processing",
+                    content = "Users can quickly filter their data, make the phenotypic data suitable for genomic selection,
+                    and obtain summary data and frequency distribution images for each trait.")
+        )
+  ),
+  column(2,
+        div(
+          style = "cursor: pointer;",
+          onclick = "Shiny.setInputValue('btn_genomic_selection', Math.random());",
+          panel_div(class_type = "default", panel_title = "Regular genomic selection and prediction",
+                    content = "Alpha-Cattle supports multiple methods of genomic selection and prediction, including GBLUP, 
+                    ssGBLUP and BLUP, users can choose the parameters and variables of the model simply.")
+        )
+  ),
+  column(2,
+        div(
+          style = "cursor: pointer;",
+          onclick = "Shiny.setInputValue('btn_joint_selection', Math.random());",
+          panel_div(class_type = "primary", panel_title = "Joint genomic selection",
+                    content = "Combine your data with data from our database into a combined population to increase 
+                    the number of reference population and thus improve the genomic selection accuracy.")
+        )
+  ),
+  column(2,
+        div(
+          style = "cursor: pointer;",
+          onclick = "Shiny.setInputValue('btn_cpi_gcpi', Math.random());",
+          panel_div(class_type = "default", panel_title = "CPI and GCPI Estimation",
+                    content = "User uploaded genomic and phenotypic data can be analyzed with the Reference Group to 
+                    estimate and predict CPI(China Performance Index) and GCPI(Genomic China Performance Index).")
+        )
+  )
+)),
  
 column(
    width = 8,offset = 2,

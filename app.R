@@ -337,24 +337,20 @@ gsMenu<-navbarMenu(
   cpiPanel
 )
 
-datPanel<-tabPanel(
-  title = "Explore public data"
-)
-
 source("jgsPanel.R")
 source("jcpiPanel.R")
+source("pdataPanel.R")
 
 
 jgsMenu<-navbarMenu(
   title = "Joint Genomic Selection",
   icon = icon("mixcloud"),
-  datPanel,
   jgsPanel,
   jcpiPanel
 )
 
 docPanel<-tabPanel(
-  title = "About HCGSP",
+  title = "About Alpha-Cattle",
   value = "About HCGSP",
   icon = icon("dochub")
 )
@@ -362,7 +358,7 @@ docPanel<-tabPanel(
 ui<-navbarPage(
   id="tabs",
   title=span(
-    "HCGSP",
+    "Alpha-Cattle",
     style='font-size:30px;margin-right:50px'
   ),
   
@@ -391,10 +387,10 @@ ui<-navbarPage(
   ),
   theme = shinythemes::shinytheme(theme = "flatly"),
 
-  
   homePanel,
   gsMenu,
   jgsMenu,
+  pdataPanel,
   docPanel
   
   #footer = div(class="footer",
@@ -411,6 +407,7 @@ server<-function(input,output,session){
   source("imputeServer.R")
   source("cpiServer.R")
   source("jcpiServer.R")
+  source("pdataServer.R")
  
   server_gs(input,output,session)
   server_jgs(input,output,session)
@@ -418,6 +415,7 @@ server<-function(input,output,session){
   imputeServer(input,output,session)
   server_cpi(input,output,session)
   server_jcpi(input,output,session)
+  pdataServer(input,output,session)
   output$pic<-renderImage({
     list(src="19.jpg",
          width="70%")
@@ -438,6 +436,21 @@ server<-function(input,output,session){
     #browser()
     updateNavbarPage(session = session, inputId = "tabs", selected = "About HCGSP")
   })
+  observeEvent(input$btn_phenotype, {
+  updateNavbarPage(session = session, inputId = "tabs", selected = "PhenotypeProcessingPage")
+})
+
+observeEvent(input$btn_genomic_selection, {
+  updateNavbarPage(session = session, inputId = "tabs", selected = "RegularGenomicSelectionPage")
+})
+
+observeEvent(input$btn_joint_selection, {
+  updateNavbarPage(session = session, inputId = "tabs", selected = "JointGenomicSelectionPage")
+})
+
+observeEvent(input$btn_cpi_gcpi, {
+  updateNavbarPage(session = session, inputId = "tabs", selected = "JointGCPICalculationPage")
+})
   
 }
 
