@@ -355,6 +355,12 @@ docPanel<-tabPanel(
   icon = icon("dochub")
 )
 
+# pdataPanel<-tabPanel(
+#   title = 'baseitititti',
+#   value = '11111',
+#   icon = icon('database')
+# )
+
 ui<-navbarPage(
   id="tabs",
   title=span(
@@ -390,8 +396,8 @@ ui<-navbarPage(
   homePanel,
   gsMenu,
   jgsMenu,
-  pdataPanel,
-  docPanel
+  docPanel,
+  pdataPanel
   
   #footer = div(class="footer",
    #             includeHTML("footer.html")
@@ -412,10 +418,10 @@ server<-function(input,output,session){
   server_gs(input,output,session)
   server_jgs(input,output,session)
   pheServer(input,output,session)
+  pdataServer(input,output,session)
   imputeServer(input,output,session)
   server_cpi(input,output,session)
   server_jcpi(input,output,session)
-  pdataServer(input,output,session)
   output$pic<-renderImage({
     list(src="19.jpg",
          width="70%")

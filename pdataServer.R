@@ -1,118 +1,111 @@
 pdataServer <- function(input, output, session) {
   flag <- 0
   
-  # 获取输入的列名，如果未指定列名，则使用数据中的列名
-  phe_name <- reactive({
-    if (is.null(input$phe_colname)) {
-      names(phe_dat())
+  # 获取用户选择的表型列名，如果为空，则使用数据的列名
+  pdata_name <- reactive({
+    req(pdata_dat())
+    if (is.null(input$pdata_colname)) {
+      names(pdata_dat())
     } else {
-      input$phe_colname
+      input$pdata_colname
     }
   })
-  
-  # 文件库中数据的列名来更新选择框
-  updatePickerInput(session = session, inputId = "phe_colname", choices = names(phe_dat()))
 
-  # 读取上传的表型数据，并根据用户的选择对数据进行筛选和过滤
-  phe_dat <- reactive({
-    # 读取用于分析的文件
-    dat <- data.table::fread("tdm_growth.txt", encoding = "UTF-8")
-    # 创建目录并将上传的文件复制到该目录
-    dir.create(path_phe, showWarnings = FALSE)
-    system(paste0("cp ", input$phe_upload$datapath, " ", path_phe, "/", input$phe_upload$name))
+  # 当用户上传数据文件时更新表型列选择器
+  observeEvent(input$pdata_upload, {
+    updatePickerInput(session = session, inputId = "pdata_colname", choices = pdata_name())
+  })
+
+  # 处理上传的表型数据
+  pdata_dat <- reactive({
+    req(input$pdata_upload)
     
-    # 如果用户指定了列名，对数据进行过滤处理
-    if (!is.null(input$phe_colname)) {
-      # 如果选择了将0转换为NA
-      if (input$trans0 == "Yes") {
+    ext <- tools::file_ext(input$pdata_upload$name)
+    dat <- switch(ext,
+                  csv = data.table::fread(input$pdata_upload$datapath, encoding = "UTF-8"),
+                  txt = data.table::fread(input$pdata_upload$datapath, encoding = "UTF-8"),
+                  validate("[ERROR:] Invalid phenotype file; Please upload a .csv or .txt file")
+    )
+    dir.create(path_phe, showWarnings = FALSE)
+    system(paste0("cp ", input$pdata_upload$datapath, " ", path_phe, "/", input$pdata_upload$name))
+
+    # 处理 0 转换为 NA，过滤 NA 和标准差筛选逻辑
+    if (!is.null(input$pdata_colname)) {
+      if (input$pdata_trans0 == "Yes") {
         dat[dat == 0] <- NA
       }
-      
-      # 如果ID在列名中，将ID列去除
-      if ("ID" %in% input$phe_colname) {
-        name_filter <- input$phe_colname[-which(input$phe_colname == "ID")]
+      if ("ID" %in% input$pdata_colname) {
+        name_filter <- input$pdata_colname[-which(input$pdata_colname == "ID")]
       } else {
-        name_filter <- input$phe_colname
+        name_filter <- input$pdata_colname
       }
-      
-      # 计算选择列的均值和标准差
       test <- dat %>%
         summarise(across(
-          .cols = name_filter, 
+          .cols = name_filter,
           .fns = list(mean = mean, sd = sd), na.rm = TRUE
         ))
-      
-      # 根据用户指定的标准差范围过滤数据
       for (i in name_filter) {
-        a <- select(test, paste0(i, "_mean")) - input$sd * select(test, paste0(i, "_sd"))
-        b <- select(test, paste0(i, "_mean")) + input$sd * select(test, paste0(i, "_sd"))
+        a <- select(test, paste0(i, "_mean")) - input$pdata_sd * select(test, paste0(i, "_sd"))
+        b <- select(test, paste0(i, "_mean")) + input$pdata_sd * select(test, paste0(i, "_sd"))
         dat[[i]][(select(dat, i) < a[[1]] | select(dat, i) > b[[1]])] <- NA
       }
-      
-      # 如果选择了过滤掉NA值
-      if (input$FilterNA == "Yes") {
+
+      if (input$pdata_FilterNA == "Yes") {
         dat <- dat %>% filter(!across(name_filter, .fns = is.na))
       }
     }
-    
+
     return(dat)
   })
-  
-  # 表格显示上传数据
-  output$phe_dat <- DT::renderDataTable({
-    select(phe_dat(), phe_name())
+
+  # 数据表渲染
+  output$pdata_dat <- DT::renderDataTable({
+    select(pdata_dat(), pdata_name())
   })
 
-  # 显示数据的摘要信息（数量、均值、标准差）
-  output$phe_summary <- DT::renderDataTable({
-    phe_summary_num <- map_dbl(phe_name(), function(x) sum(!is.na(phe_dat()[[x]])))
-    phe_summary_mean <- map_dbl(phe_name(), function(x) mean(phe_dat()[[x]], na.rm = TRUE))
-    phe_summary_sd <- map_dbl(phe_name(), function(x) sd(phe_dat()[[x]], na.rm = TRUE))
-    
-    phe <- data.frame(
-      Trait = phe_name(),
-      Size = phe_summary_num,
-      Mean = phe_summary_mean,
-      SD = phe_summary_sd
+  # 摘要表渲染
+  output$pdata_summary <- DT::renderDataTable({
+    pdata_summary_num <- map_dbl(pdata_name(), function(x) sum(!is.na(pdata_dat()[[x]])))
+    pdata_summary_mean <- map_dbl(pdata_name(), function(x) mean(pdata_dat()[[x]], na.rm = TRUE))
+    pdata_summary_sd <- map_dbl(pdata_name(), function(x) sd(pdata_dat()[[x]], na.rm = TRUE))
+
+    pdata <- data.frame(
+      Trait = pdata_name(),
+      Size = pdata_summary_num,
+      Mean = pdata_summary_mean,
+      SD = pdata_summary_sd
     )
-    
-    phe
+    pdata
   })
-  
-  # 绘制选择列的直方图
-  output$plot <- renderCombineWidgets({
-    plot_dat <- phe_dat() %>%
-      select(phe_name()) %>%
+
+  # 直方图渲染
+  output$pdata_plot <- renderCombineWidgets({
+    plot_dat <- pdata_dat() %>%
+      select(pdata_name()) %>%
       select_if(is.numeric)
-    
-    # 为每个数值列绘制直方图
     plist <- lapply(names(plot_dat), function(x) {
       ggplotly(ggplot(plot_dat, aes_string(x)) +
-        geom_histogram(fill = "#69b3a2", bins = 30, color = "#e9ecef", alpha = 0.9) +
-        theme_bw() +
-        labs(x = x, y = "Counts"))
+                 geom_histogram(fill = "#69b3a2", bins = 30,
+                                color = "#e9ecef", alpha = 0.9) +
+                 theme_bw() +
+                 labs(x = x, y = "Counts"))
     })
-    
-    # 将多个图表组合在一起显示
+
+    # 使用 combineWidgets 组合多个图表
     p <- combineWidgets(list = plist, nrow = ceiling(length(plist) / 3))
     p
   })
-  
-  # 文件下载处理器，生成过滤后的文件
-  output$downloadData <- downloadHandler(
+
+  # 文件下载处理
+  output$downloadPData <- downloadHandler(
     filename = function() {
-      paste0(tools::file_path_sans_ext(input$phe_upload$name), "_filter.", tools::file_ext(input$phe_upload$name))
+      paste0(tools::file_path_sans_ext(input$pdata_upload$name), "_filter.", tools::file_ext(input$pdata_upload$name))
     },
     content = function(file) {
-      switch(tools::file_ext(input$phe_upload$name),
-             csv = write.csv(phe_dat(), file, row.names = FALSE, quote = FALSE, na = ""),
-             txt = write.table(phe_dat(), file, row.names = FALSE, quote = FALSE, na = "")
+      switch(tools::file_ext(input$pdata_upload$name),
+             csv = write.csv(pdata_dat(), file, row.names = FALSE, quote = FALSE, na = ""),
+             txt = write.table(pdata_dat(), file, row.names = FALSE, quote = FALSE, na = "")
       )
     }
   )
-
-  # 调试模式
-  observeEvent(input$start, {
-    browser()
-  })
 }
