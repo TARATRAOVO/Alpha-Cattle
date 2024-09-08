@@ -97,15 +97,15 @@ pdataServer <- function(input, output, session) {
   })
 
   # 文件下载处理
-  output$downloadPData <- downloadHandler(
-    filename = function() {
-      paste0(tools::file_path_sans_ext(input$pdata_server_file), "_filter.", tools::file_ext(input$pdata_server_file))
-    },
-    content = function(file) {
-      switch(tools::file_ext(input$pdata_server_file),
-             csv = write.csv(pdata_dat(), file, row.names = FALSE, quote = FALSE, na = ""),
-             txt = write.table(pdata_dat(), file, row.names = FALSE, quote = FALSE, na = "")
-      )
-    }
-  )
+  # output$downloadPData <- downloadHandler(
+  #   filename = function() {
+  #     paste0(tools::file_path_sans_ext(input$pdata_server_file), "_filter.", tools::file_ext(input$pdata_server_file))
+  #   },
+  #   content = function(file) {
+  #     switch(tools::file_ext(input$pdata_server_file),
+  #            csv = write.csv(pdata_dat(), file, row.names = FALSE, quote = FALSE, na = ""),
+  #            txt = write.table(pdata_dat(), file, row.names = FALSE, quote = FALSE, na = "")
+  #     )
+  #   }
+  # )
 }

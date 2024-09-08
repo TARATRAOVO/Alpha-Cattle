@@ -58,8 +58,8 @@ pdataPanel <- tabPanel(
                 content = "根据与平均值相差n个标准差的范围过滤数据，超出范围的值将转换为NA。",
                 placement = "right", trigger = "hover", options = list(container = "body")),
       
-      div(id = "downloadPData_BS", style = "margin-top:50px;text-align:center", downloadButton("downloadPData", "Download", class = "btn btn-primary")),
-      div(id = "pdata_start_BS", style = "margin-top:50px;float:right", actionButton("pdata_start", "Start!"))
+    #   div(id = "downloadPData_BS", style = "margin-top:50px;text-align:center", downloadButton("downloadPData", "Download", class = "btn btn-primary")),
+    #   div(id = "pdata_start_BS", style = "margin-top:50px;float:right", actionButton("pdata_start", "Start!"))
     ),
     
     mainPanel(
