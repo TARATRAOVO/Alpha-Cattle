@@ -57,9 +57,10 @@ pdataServer <- function(input, output, session) {
     return(dat)
   })
 
-  # 数据表渲染
+  # 数据表渲染 - Limit to first 50 rows
   output$pdata_dat <- DT::renderDataTable({
-    select(pdata_dat(), pdata_name())
+    dat <- select(pdata_dat(), pdata_name())
+    head(dat, 50)  # Show only the first 50 rows
   })
 
   # 摘要表渲染
