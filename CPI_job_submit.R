@@ -25,7 +25,7 @@ gen_file<-res$gen_file
 DMU1<-"/srv/shiny-server/dmu/dmu1"
 DMUAI<-"/srv/shiny-server/dmu/dmuai"
 DMU4<-"/srv/shiny-server/dmu/dmu4"
-plink<-"/public/home/chenjc/miniconda3/pkgs/plink-1.90b6.21-h516909a_0/bin/plink"
+plink<-"./plink/plink"
 gcta<-"/public/home/chenjc/miniconda3/pkgs/gcta-1.93.2beta-h9ee0642_1/bin/gcta64"
 from_email<-"852322127@qq.com"
 to_email<-res$email

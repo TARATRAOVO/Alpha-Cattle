@@ -27,7 +27,7 @@ breed<-"Holstein"
 DMU1<-"/srv/shiny-server/dmu/dmu1"
 DMUAI<-"/srv/shiny-server/dmu/dmuai"
 DMU4<-"/srv/shiny-server/dmu/dmu4"
-plink<-"/public/home/chenjc/miniconda3/pkgs/plink-1.90b6.21-h516909a_0/bin/plink"
+plink<-"./plink/plink"
 gcta<-"/public/home/chenjc/miniconda3/pkgs/gcta-1.93.2beta-h9ee0642_1/bin/gcta64"
 from_email<-"852322127@qq.com"
 to_email<-res$email
@@ -225,7 +225,7 @@ if(model_check_pass){
     ###准备一个id和品种对应的文件  也可以直接每个品种准备一套数据包括表型基因型系谱
     ref_names=vector()
     for(i in 1:length(geno_names)){
-      system(paste0("/public/home/chenjc/miniconda3/pkgs/plink-1.90b6.21-h516909a_0/bin/plink --bfile ",
+      system(paste0("./plink/plink --bfile ",
                     geno_names[i],
                     " --export vcf  --out ",geno_names[i]))
       system(paste0("bgzip ",geno_names[i],".vcf"))
@@ -247,7 +247,7 @@ if(model_check_pass){
       system("/srv/bcftools-1.14/bcftools index 13_sort.vcf.gz")
       system("/srv/bcftools-1.14/bcftools merge 13_sort.vcf.gz 0002.vcf.gz -o final.vcf")
       system(paste0("java -jar /public/home/chenjc/ltw/nyjh/fill/softwareandImputeacc/beagle.18May20.d20.jar ref=../../",breed,"_ref/",ref_names[i],".vcf.gz gt=final.vcf ne=100 chrom=",i," out=merge.beagle"))
-      system("/public/home/chenjc/miniconda3/pkgs/plink-1.90b6.21-h516909a_0/bin/plink --vcf merge.beagle.vcf.gz --make-bed --out merge.beagle")
+      system("./plink/plink
       setwd(path)
     }
 

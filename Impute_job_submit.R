@@ -21,7 +21,7 @@ res$gen_file<-gsub(".chip","",res$gen_file) ###先去掉demo里geno文件名里�
 gen_file<-res$gen_file
 density<-res$density
 
-plink<-"/public/home/chenjc/miniconda3/pkgs/plink-1.90b6.21-h516909a_0/bin/plink"
+plink<-"./plink/plink"
 from_email<-"zzsjtu1988@163.com"
 to_email<-res$email
 task<-res$task
@@ -62,7 +62,7 @@ genotype_summary_msg<-""
     if(density=="150K_SNP"){
     for(i in 1:length(geno_names)){
       Success=0
-      system(paste0("/public/home/chenjc/miniconda3/pkgs/plink-1.90b6.21-h516909a_0/bin/plink --bfile ",
+      system(paste0("./plink/plink --bfile ",
                     geno_names[i],
                     " --export vcf  --out ",geno_names[i]))
       system(paste0("bgzip ",geno_names[i],".vcf"))
@@ -71,13 +71,13 @@ genotype_summary_msg<-""
       system(paste0("java -jar /public/home/chenjc/ltw/nyjh/fill/softwareandImputeacc/conform-gt.24May16.cee.jar ref=../",breed,"_ref/",ref_names[i],".vcf.gz gt=",geno_names[i],".vcf.gz strict=false match=POS chrom=",i," out=",geno_names[i],".conform"))
       system(paste0("/srv/bcftools-1.14/bcftools index ",geno_names[i],".conform.vcf.gz"))
       system(paste0("java -jar /public/home/chenjc/ltw/nyjh/fill/softwareandImputeacc/beagle.18May20.d20.jar ref=../",breed,"_ref/",ref_names[i],".vcf.gz gt=",geno_names[i],".conform.vcf.gz ne=100 chrom=",i," out=",geno_names[i],".beagle.150K"))
-      system(paste0("/public/home/chenjc/miniconda3/pkgs/plink-1.90b6.21-h516909a_0/bin/plink --vcf ",geno_names[i],".beagle.150K.vcf.gz --make-bed --out ",geno_names[i],".beagle.150K"))
+      system(paste0("./plink/plink --vcf ",geno_names[i],".beagle.150K.vcf.gz --make-bed --out ",geno_names[i],".beagle.150K"))
       setwd(path)
     }
    }else if(density=="Whole_Genome"){
     for(i in 1:length(geno_names)){
       Success=1
-      system(paste0("/public/home/chenjc/miniconda3/pkgs/plink-1.90b6.21-h516909a_0/bin/plink --bfile ",
+      system(paste0("./plink/plink --bfile ",
                     geno_names[i],
                     " --export vcf  --out ",geno_names[i]))
       system(paste0("bgzip ",geno_names[i],".vcf"))
@@ -90,7 +90,7 @@ genotype_summary_msg<-""
       system(paste0("java -jar /public/home/chenjc/ltw/nyjh/fill/softwareandImputeacc/conform-gt.24May16.cee.jar ref=/public/home/chenjc/ltw/nyjh/fill/imputed1000/genotype_beagle_",ref_names[i],".vcf gt=",geno_names[i],".beagle.150K.vcf.gz strict=false match=POS chrom=",i," out=",geno_names[i],".conform.WGS"))
       system(paste0("/srv/bcftools-1.14/bcftools index ",geno_names[i],".conform.WGS.vcf.gz"))
       system(paste0("java -Xmx60g -jar /public/home/chenjc/ltw/nyjh/fill/softwareandImputeacc/beagle.18May20.d20.jar ref=/public/home/chenjc/ltw/nyjh/fill/imputed1000/genotype_beagle_",ref_names[i],".vcf gt=",geno_names[i],".conform.WGS.vcf.gz ne=100 chrom=",i," out=",geno_names[i],".beagle.WGS"))
-      system(paste0("/public/home/chenjc/miniconda3/pkgs/plink-1.90b6.21-h516909a_0/bin/plink --vcf ",geno_names[i],".beagle.WGS.vcf.gz --make-bed --out ",geno_names[i],".beagle.WGS"))
+      system(paste0("./plink/plink --vcf ",geno_names[i],".beagle.WGS.vcf.gz --make-bed --out ",geno_names[i],".beagle.WGS"))
       setwd(path)
     }
   }else{Success=2}

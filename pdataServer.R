@@ -11,23 +11,22 @@ pdataServer <- function(input, output, session) {
     }
   })
 
-  # 当用户上传数据文件时更新表型列选择器
-  observeEvent(input$pdata_upload, {
+  # 当用户选择服务器文件时更新表型列选择器
+  observeEvent(input$pdata_server_file, {
     updatePickerInput(session = session, inputId = "pdata_colname", choices = pdata_name())
   })
 
-  # 处理上传的表型数据
+  # 处理选中的表型数据
   pdata_dat <- reactive({
-    req(input$pdata_upload)
+    req(input$pdata_server_file)
     
-    ext <- tools::file_ext(input$pdata_upload$name)
+    file_path <- paste0("./data_base/", input$pdata_server_file)
+    ext <- tools::file_ext(file_path)
     dat <- switch(ext,
-                  csv = data.table::fread(input$pdata_upload$datapath, encoding = "UTF-8"),
-                  txt = data.table::fread(input$pdata_upload$datapath, encoding = "UTF-8"),
-                  validate("[ERROR:] Invalid phenotype file; Please upload a .csv or .txt file")
+                  csv = data.table::fread(file_path, encoding = "UTF-8"),
+                  txt = data.table::fread(file_path, encoding = "UTF-8"),
+                  validate("[ERROR:] 无效的表型文件，请选择.csv或.txt文件")
     )
-    dir.create(path_phe, showWarnings = FALSE)
-    system(paste0("cp ", input$pdata_upload$datapath, " ", path_phe, "/", input$pdata_upload$name))
 
     # 处理 0 转换为 NA，过滤 NA 和标准差筛选逻辑
     if (!is.null(input$pdata_colname)) {
@@ -39,7 +38,7 @@ pdataServer <- function(input, output, session) {
       } else {
         name_filter <- input$pdata_colname
       }
-      test <- dat %>%
+      test <- dat %>% 
         summarise(across(
           .cols = name_filter,
           .fns = list(mean = mean, sd = sd), na.rm = TRUE
@@ -80,8 +79,8 @@ pdataServer <- function(input, output, session) {
 
   # 直方图渲染
   output$pdata_plot <- renderCombineWidgets({
-    plot_dat <- pdata_dat() %>%
-      select(pdata_name()) %>%
+    plot_dat <- pdata_dat() %>% 
+      select(pdata_name()) %>% 
       select_if(is.numeric)
     plist <- lapply(names(plot_dat), function(x) {
       ggplotly(ggplot(plot_dat, aes_string(x)) +
@@ -99,10 +98,10 @@ pdataServer <- function(input, output, session) {
   # 文件下载处理
   output$downloadPData <- downloadHandler(
     filename = function() {
-      paste0(tools::file_path_sans_ext(input$pdata_upload$name), "_filter.", tools::file_ext(input$pdata_upload$name))
+      paste0(tools::file_path_sans_ext(input$pdata_server_file), "_filter.", tools::file_ext(input$pdata_server_file))
     },
     content = function(file) {
-      switch(tools::file_ext(input$pdata_upload$name),
+      switch(tools::file_ext(input$pdata_server_file),
              csv = write.csv(pdata_dat(), file, row.names = FALSE, quote = FALSE, na = ""),
              txt = write.table(pdata_dat(), file, row.names = FALSE, quote = FALSE, na = "")
       )

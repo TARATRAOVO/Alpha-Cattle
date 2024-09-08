@@ -164,7 +164,7 @@ server_jgs<-function(input,output,session){
     
     dir.create(path_jgs,showWarnings = F)
     for (i in 1:length(name)){
-      system(paste0("/public/home/chenjc/miniconda3/pkgs/plink-1.90b6.21-h516909a_0/bin/plink --bfile ",
+      system(paste0("./plink/plink --bfile ",
                     name[i]," --out ",path_jgs,"/",name_cln[i]," --make-bed"))
       
       con  <- file(paste0(path_jgs,"/",name_cln[i],".log"), open = "r")

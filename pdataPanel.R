@@ -22,10 +22,11 @@ pdataPanel <- tabPanel(
   sidebarLayout(
     sidebarPanel(
       width = 3,
-      div(id = "pdata_upload_BS", style = "margin-top:30px", fileInput("pdata_upload", "Upload phenotype file (.txt or .csv):")),
+      div(id = "pdata_upload_BS", style = "margin-top:30px", 
+          pickerInput("pdata_server_file", "选择数据库文件:", choices = list.files("./data_base"), multiple = FALSE)),
       bsPopover(id = "pdata_upload_BS", 
-                title = "Phenotype file:", 
-                content = "This file is required, and the first column must be Animal ID",
+                title = "选择数据库文件:", 
+                content = "从数据库中选择想要查看的数据",
                 placement = "right", trigger = "hover", options = list(container = "body")),
       
       div(id = "pdata_colname_BS", style = "margin-top:50px", pickerInput(
@@ -35,26 +36,26 @@ pdataPanel <- tabPanel(
         choices = NULL
       )),
       bsPopover(id = "pdata_colname_BS", 
-                title = "Select the traits to be filtered:", 
-                content = "You can select one or more traits, and we will filter each trait",
+                title = "选择要筛选的性状:", 
+                content = "您可以选择一个或多个性状，并过滤每个性状",
                 placement = "right", trigger = "hover", options = list(container = "body")),
       
       div(id = "pdata_trans0_BS", style = "margin-top:50px", radioButtons("pdata_trans0", "Trans 0 to NA:", choices = c("Yes", "No"), selected = "Yes")),
       bsPopover(id = "pdata_trans0_BS", 
-                title = "Verify that the 0 value is converted to NA:", 
-                content = "If Yes is selected, we will replace the 0 with NA because the value of 0 in the phenotype is usually meaningless.",
+                title = "将0转换为NA:", 
+                content = "选择Yes，将0替换为NA，因为表型中的0通常没有意义。",
                 placement = "right", trigger = "hover", options = list(container = "body")),
       
       div(id = "pdata_FilterNA_BS", style = "margin-top:50px", radioButtons("pdata_FilterNA", "Filter NA:", choices = c("Yes", "No"), selected = "Yes")),
       bsPopover(id = "pdata_FilterNA_BS", 
-                title = "Verify that filter NA:", 
-                content = "In descriptive statistics, NA will be ignored. Yes: When all traits in a record are NA, the record will be deleted.",
+                title = "过滤NA值:", 
+                content = "在描述性统计中，NA值会被忽略。选择Yes时，记录中所有性状为NA的记录将被删除。",
                 placement = "right", trigger = "hover", options = list(container = "body")),
       
-      div(id = "pdata_sd_BS", style = "margin-top:50px", sliderInput("pdata_sd", "Filter range according to standard deviation", value = 3, min = 0, max = 10)),
+      div(id = "pdata_sd_BS", style = "margin-top:50px", sliderInput("pdata_sd", "根据标准差过滤范围", value = 3, min = 0, max = 10)),
       bsPopover(id = "pdata_sd_BS", 
-                title = "Select filter criteria:", 
-                content = "Filter the data based on n standard deviations from the mean. Out-of-range values are converted to NA when multiple traits are selected.",
+                title = "选择过滤标准:", 
+                content = "根据与平均值相差n个标准差的范围过滤数据，超出范围的值将转换为NA。",
                 placement = "right", trigger = "hover", options = list(container = "body")),
       
       div(id = "downloadPData_BS", style = "margin-top:50px;text-align:center", downloadButton("downloadPData", "Download", class = "btn btn-primary")),
