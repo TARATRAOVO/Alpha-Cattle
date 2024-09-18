@@ -340,6 +340,8 @@ gsMenu<-navbarMenu(
 source("jgsPanel.R")
 source("jcpiPanel.R")
 source("pdataPanel.R")
+source("docPanel.R")
+source("megPanel.R")
 
 
 jgsMenu<-navbarMenu(
@@ -348,18 +350,6 @@ jgsMenu<-navbarMenu(
   jgsPanel,
   jcpiPanel
 )
-
-docPanel<-tabPanel(
-  title = "About Alpha-Cattle",
-  value = "About HCGSP",
-  icon = icon("dochub")
-)
-
-# pdataPanel<-tabPanel(
-#   title = 'baseitititti',
-#   value = '11111',
-#   icon = icon('database')
-# )
 
 ui<-navbarPage(
   id="tabs",
@@ -396,8 +386,10 @@ ui<-navbarPage(
   homePanel,
   gsMenu,
   jgsMenu,
-  docPanel,
-  pdataPanel
+  pdataPanel,
+  megPanel,
+  docPanel
+  
   
   #footer = div(class="footer",
    #             includeHTML("footer.html")
@@ -414,6 +406,7 @@ server<-function(input,output,session){
   source("cpiServer.R")
   source("jcpiServer.R")
   source("pdataServer.R")
+  source("magServer.R")
  
   server_gs(input,output,session)
   server_jgs(input,output,session)
@@ -422,6 +415,7 @@ server<-function(input,output,session){
   imputeServer(input,output,session)
   server_cpi(input,output,session)
   server_jcpi(input,output,session)
+  magServer(input, output, session)
   output$pic<-renderImage({
     list(src="19.jpg",
          width="70%")

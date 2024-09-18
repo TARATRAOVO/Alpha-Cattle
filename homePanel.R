@@ -7,6 +7,7 @@ homePanel<-tabPanel(
   #div(class = "inlay", style = "height:200px;width:100%;background-color: #2c3e50;"),
   p("Characteristics",
     style='font-size:50px;margin-top:80px;margin-bottom:20px;'
+    
   )),
   column(
     width = 8,offset = 2,
@@ -72,50 +73,61 @@ div(style="text-align:center;margin-bottom:80px;", fluidRow(
         )
   )
 )),
- 
 column(
-   width = 8,offset = 2,
+   width = 8, offset = 2,
    tags$div(
      class = "document",
 
      div(tags$b("Genomic selection for combined population", style='font-size:25px;')),
      br(),
 
-      tags$li("The accuracy of GEBV is largely influenced by the size of the training population (Goddard and Hayes 2009). 
+     tags$li("The accuracy of GEBV is largely influenced by the size of the training population (Goddard and Hayes 2009). 
                      However, in animal breeding practice, it is sometimes difficult to obtain a large training population. 
                      For instance, due to capital, management and other reasons, the number of Holstein cattles with genotype information measured in a ranch is often small.
                      The cost of genotyping is still quite high for large-scale individuals. 
-                     In response, one solution is to carry out joint breeding to enlarge the training population and further improve the accuracy of GEBV.",
-                     ),
-      br(),
-             imageOutput("pic_pca"),
+                     In response, one solution is to carry out joint breeding to enlarge the training population and further improve the accuracy of GEBV."),
+     tags$li("GEBV的准确性在很大程度上受训练群体规模的影响（Goddard和Hayes 2009）。然而，在动物育种实践中，有时很难获得较大的训练群体。 例如，由于资本、管理等原因，牧场中具有基因型信息的荷斯坦牛数量往往较少。大规模个体的基因分型成本仍然相当高。对此，一种解决方案是进行联合育种，以扩大训练群体并进一步提高GEBV的准确性。",
+             style = 'color: grey;'),
      br(),
+
+     imageOutput("pic_pca"),
+     br(),
+
      tags$li("We test a combined reference population was established with animals from two different populations (TB and XX) of the Yorkshire pig. Differences in 
              genetic background (Figure A) were evident between the two populations and the accuracies of predictions using the merged population and the single population were compared (Figure B). 
-             Our results confirmed that using an admixed reference population is meaningful for joint breeding.",
-     ),
+             Our results confirmed that using an admixed reference population is meaningful for joint breeding."),
+     tags$li("我们测试了由约克夏猪的两个不同群体（TB和XX）组成的联合参考群体。 两个群体在遗传背景上（图A）存在显著差异，并比较了合并群体和单一群体的预测准确性（图B）。 我们的结果证实，使用混合参考群体对于联合育种是有意义的。",
+             style = 'color: grey;'),
      br(),
+
      div(tags$b("Large Reference Population and Corresponding Traits", style='font-size:25px;')),
      br(),
+
      tags$li("We have 3847 reference populations with genome-wide information. They come from Guangming Ranch across China, and they share the same characteristics as the Chinese Holstein cattle genome. 
              At the same time, we also have matching phenotype group information, including milk yield, milk protein, DHI, somatic cell score, body type score, limb and hoof character score, birth spacing, service life 
              and many other traits you care about. With the help of such a large phenotype group and genome data, after you upload your phenotype group and genome files, you can get very accurate trait prediction results 
-             to help you decide the leaving or staying issue of each bull.
-             "),
-      br(),
+             to help you decide the leaving or staying issue of each bull."),
+     tags$li("我们拥有3847个具有全基因组信息的参考群体。 它们来自中国各地的光明牧场，并且具有与中国荷斯坦牛基因组相同的特征。同时，我们还拥有匹配的表型组信息，包括产奶量、乳蛋白、DHI、体细胞评分、体型评分、肢体和蹄部评分、产犊间隔、使用寿命等您关心的多种性状。凭借如此庞大的表型组和基因组数据，在您上传表型组和基因组文件后，您可以获得非常准确的性状预测结果，帮助您决定每头公牛的去留问题。",
+             style = 'color: grey;'),
+     br(),
+
      imageOutput("pic_cor"),
      br(),
+
      div(tags$b("Predict CPI and select according to CPI", style='font-size:25px;')),
      br(),
-     tags$li(" Our database contains all the required traits for calculating the CPI of Holstein cattle. CPI index is applicable to domestic progeny testing and verification bulls with daughter production traits 
+
+     tags$li("Our database contains all the required traits for calculating the CPI of Holstein cattle. CPI index is applicable to domestic progeny testing and verification bulls with daughter production traits 
               and daughter body type identification results that are routinely evaluated in China. At the same time, we can also calculate the GCPI index. If you want to select bulls according to an index, 
-              we can calculate the CPI and GCPI of the individual bulls you uploaded (genome sequencing information is required)
-             "),
+              we can calculate the CPI and GCPI of the individual bulls you uploaded (genome sequencing information is required)."),
+     tags$li("我们的数据库包含计算荷斯坦牛CPI所需的所有性状。CPI指数适用于国内子代测试和验证公牛，其女儿的生产性状和体型鉴定结果在中国被常规评估。同时，我们还可以计算GCPI指数。如果您想根据指数选择公牛，我们可以计算您上传的公牛的CPI和GCPI（需要基因组测序信息）。",
+             style = 'color: grey;'),
      br(),
+
      imageOutput("pic_joint"),
-     br(),
+     br()
    )
- ),
+),
 
 column(width = 12,align="center",
        style = "height:50px;color:white;width:105%;background-color: #2c3e50;margin-left:-15px;margin-top:180px", 
