@@ -1,5 +1,6 @@
 # 在脚本的开头加载库
 library(vcfR)
+library(stringr)
 
 # 定义一个函数来读取VCF文件并提取基因型矩阵
 read_vcf_to_matrix <- function(vcf_file_path) {
@@ -15,6 +16,8 @@ read_vcf_to_matrix <- function(vcf_file_path) {
   # 返回矩阵
   return(genotype_matrix)
 }
+
+# 
 
 # 定义一个函数来计算每个位点的REF百分比
 calculate_ref_percent <- function(genotype_matrix) {
@@ -40,6 +43,19 @@ calculate_ref_percent <- function(genotype_matrix) {
   return(ref_percent)
 }
 
+# 定义一个函数来查询特定位点的REF百分比
+query_ref_percent <- function(ref_percent, chromosome, position) {
+  # 构造位点名称
+  locus_name <- paste(chromosome, position, sep = "_")
+  
+  # 检查位点名称是否存在于ref_percent向量的名称中
+  if (locus_name %in% names(ref_percent)) {
+    return(ref_percent[locus_name])
+  } else {
+    return(NA)  # 如果位点不在ref_percent中，返回NA
+  }
+}
+
 # # 示例调用函数
 # vcf_file <- "path_to_your_vcf_file.vcf"  # 替换为实际VCF文件路径
 # genotype_matrix <- read_vcf_to_matrix(vcf_file)
@@ -47,6 +63,6 @@ calculate_ref_percent <- function(genotype_matrix) {
 # # 计算每个位点的REF百分比
 # ref_percent <- calculate_ref_percent(genotype_matrix)
 
-# # 查看基因型矩阵和REF百分比的前几行
-# head(genotype_matrix)
-# head(ref_percent)
+# # 查询特定位点的REF百分比
+# specific_ref_percent <- query_ref_percent(ref_percent, "chr1", 12345)
+# print(specific_ref_percent)
