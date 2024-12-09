@@ -1,139 +1,242 @@
-homePanel<-tabPanel(
+homePanel <- tabPanel(
   title = "Home",
   icon = icon("home"),
-  br(),
-  column(
-    width = 8,offset = 2,
-  #div(class = "inlay", style = "height:200px;width:100%;background-color: #2c3e50;"),
-  p("Characteristics",
-    style='font-size:50px;margin-top:80px;margin-bottom:20px;'
-    
-  )),
-  column(
-    width = 8,offset = 2,
-        div(class = "jumbotron",
-            h1("Alpha-Cattle"), 
-            p("Alpha-Cattle provides
-              a platform and software to enable multiple modes of genomic selection and Prediction in Holstein Cattles."), 
-            p("Alpha-Cattle 提供支持多模式基因组选择、荷斯坦奶牛遗传评估及性状预测的平台与软件。",style='font-size:20px; color:gray; margin-top:10px;'),
-            p(a(class = "btn btn-primary btn-lg action-button shiny-bound-input", id='tabBut', "Learn more"))
+
+  # 全局样式定义
+  tags$head(
+    tags$style(HTML("
+      :root {
+        --primary-color: #2c3e50;
+        --secondary-color: #6c757d;
+        --bg-light: #f8f9fa;
+        --spacing-lg: 80px;
+        --spacing-md: 60px;
+        --spacing-sm: 30px;
+      }
+
+      .container-fluid {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      .section {
+        padding: var(--spacing-md) 0;
+      }
+
+      .feature-card {
+        background: white;
+        border-radius: 12px;
+        padding: 25px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+        height: 100%;
+      }
+
+      .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 25px rgba(0,0,0,0.12);
+      }
+
+      .hero-title {
+        font-size: 3.5rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        margin-bottom: 1.5rem;
+      }
+
+      .hero-subtitle {
+        font-size: 1.25rem;
+        color: var(--secondary-color);
+        line-height: 1.6;
+      }
+
+      .btn-custom {
+        padding: 0.75rem 2.5rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border-radius: 30px;
+        transition: all 0.3s ease;
+      }
+
+      .btn-custom:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      }
+
+      .content-title {
+        font-size: 2.25rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        margin-bottom: 2rem;
+      }
+
+      .footer {
+        background: var(--primary-color);
+        color: white;
+        padding: var(--spacing-sm) 0;
+      }
+
+      /* 添加新的样式 */
+      .image-container {
+        position: relative;
+        overflow: hidden;
+        border-radius: 8px;
+        margin: 30px 0;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      }
+      
+      .section-subtitle {
+        font-size: 1.8em;
+        color: #2c3e50;
+        margin: 40px 0 20px 0;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #eee;
+      }
+      
+      .content-block {
+        margin: 25px 0;
+      }
+      
+      .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 30px;
+        padding: 20px 0;
+      }
+      
+      .scroll-reveal {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.6s ease-out;
+      }
+      
+      .scroll-reveal.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      
+      .bilingual-block {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        margin: 15px 0;
+      }
+      
+      .highlight-text {
+        background: #e3f2fd;
+        padding: 2px 5px;
+        border-radius: 3px;
+      }
+    "))
+  ),
+
+  # Hero Section
+  div(class = "inlay", style = "height:70px;width:100%;background-color: white;"),
+  div(
+    class = "section hero-section",
+    style = "background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);",
+    div(
+      class = "container-fluid",
+      column(
+        width = 8, offset = 2,
+        div(
+          class = "text-center",
+          h1(class = "hero-title", "Alpha-Cattle"),
+          p(
+            class = "hero-subtitle",
+            "Alpha-Cattle provides a platform and software to enable multiple modes of genomic selection and Prediction in Holstein Cattles."
+          ),
+          p(
+            class = "hero-subtitle",
+            "Alpha-Cattle 提供支持多模式基因组选择、荷斯坦奶牛遗传评估及性状预测的平台与软件。"
+          ),
+          div(
+            style = "margin-top: 2rem",
+            actionButton(
+              inputId = "tabBut",
+              label = "Learn More",
+              class = "btn-custom btn-primary"
             )
+          )
+        )
+      )
+    )
+  ),
 
-   ),
-  #imageOutput("pic"),
+  # Features Section
+  div(
+    class = "section features-section",
+    div(
+      class = "container-fluid",
+      h2(class = "text-center content-title", "Our Features"),
+      fluidRow(
+        column(
+          3,
+          div(
+            class = "feature-card",
+            onclick = "Shiny.setInputValue('btn_phenotype', Math.random());",
+            icon("chart-line", class = "fa-3x mb-4"),
+            h4("Phenotype Processing", class = "mb-3"),
+            p("Users can quickly filter their data and process phenotypic information.")
+          )
+        ),
+        column(
+          3,
+          div(
+            class = "feature-card",
+            onclick = "Shiny.setInputValue('btn_genotype', Math.random());",
+            icon("dna", class = "fa-3x mb-4"),
+            h4("Genotype Processing", class = "mb-3"),
+            p("Efficient processing and analysis of genotype data.")
+          )
+        ),
+        column(
+          3,
+          div(
+            class = "feature-card",
+            onclick = "Shiny.setInputValue('btn_prediction', Math.random());",
+            icon("brain", class = "fa-3x mb-4"),
+            h4("Genomic Prediction", class = "mb-3"),
+            p("Advanced algorithms for genomic prediction and selection.")
+          )
+        ),
+        column(
+          3,
+          div(
+            class = "feature-card",
+            onclick = "Shiny.setInputValue('btn_analysis', Math.random());",
+            icon("chart-bar", class = "fa-3x mb-4"),
+            h4("Data Analysis", class = "mb-3"),
+            p("Comprehensive tools for statistical analysis and visualization.")
+          )
+        )
+      )
+    )
+  ),
 
- tags$style(HTML(
-    " #pic_pca{
-    text-align:center;
-    }
-    #pic_cor{
-    text-align:center;
-    }
-    #pic_joint{
-    text-align:center;
-    }
-    "
-  )),
- div(class = "inlay", style = "height:650px;width:100%;background-color: white;"),
-div(style="text-align:center;margin-bottom:80px;", fluidRow(
-  column(2, offset = 2,
+
+  # Footer
+  div(
+    class = "footer",
+    div(
+      class = "container-fluid",
+      column(
+        width = 12,
         div(
-          style = "cursor: pointer;",  # 更改光标样式为手指
-          onclick = "Shiny.setInputValue('btn_phenotype', Math.random());",  # 设置输入值
-          panel_div(class_type = "primary", panel_title = "Phenotype processing",
-                    content = "Users can quickly filter their data, make the phenotypic data suitable for genomic selection,
-                    and obtain summary data and frequency distribution images for each trait.")
+          class = "text-center",
+          h6("Copyright 2022 College of Agriculture and Biology, ShangHaiJiaoTong University.",
+            style = "margin-bottom: 0.75rem;"
+          ),
+          h6("800# Dongchuan Road, Shanghai, China",
+            style = "margin-bottom: 0.5rem;"
+          ),
+          p("E-mail: panyuchun1963@aliyun.com",
+            style = "margin-bottom: 0;"
+          )
         )
-  ),
-  column(2,
-        div(
-          style = "cursor: pointer;",
-          onclick = "Shiny.setInputValue('btn_genomic_selection', Math.random());",
-          panel_div(class_type = "default", panel_title = "Regular genomic selection and prediction",
-                    content = "Alpha-Cattle supports multiple methods of genomic selection and prediction, including GBLUP, 
-                    ssGBLUP and BLUP, users can choose the parameters and variables of the model simply.")
-        )
-  ),
-  column(2,
-        div(
-          style = "cursor: pointer;",
-          onclick = "Shiny.setInputValue('btn_joint_selection', Math.random());",
-          panel_div(class_type = "primary", panel_title = "Joint genomic selection",
-                    content = "Combine your data with data from our database into a combined population to increase 
-                    the number of reference population and thus improve the genomic selection accuracy.")
-        )
-  ),
-  column(2,
-        div(
-          style = "cursor: pointer;",
-          onclick = "Shiny.setInputValue('btn_cpi_gcpi', Math.random());",
-          panel_div(class_type = "default", panel_title = "CPI and GCPI Estimation",
-                    content = "User uploaded genomic and phenotypic data can be analyzed with the Reference Group to 
-                    estimate and predict CPI(China Performance Index) and GCPI(Genomic China Performance Index).")
-        )
+      )
+    )
   )
-)),
-column(
-   width = 8, offset = 2,
-   tags$div(
-     class = "document",
-
-     div(tags$b("Genomic selection for combined population", style='font-size:25px;')),
-     br(),
-
-     tags$li("The accuracy of GEBV is largely influenced by the size of the training population (Goddard and Hayes 2009). 
-                     However, in animal breeding practice, it is sometimes difficult to obtain a large training population. 
-                     For instance, due to capital, management and other reasons, the number of Holstein cattles with genotype information measured in a ranch is often small.
-                     The cost of genotyping is still quite high for large-scale individuals. 
-                     In response, one solution is to carry out joint breeding to enlarge the training population and further improve the accuracy of GEBV."),
-     tags$li("GEBV的准确性在很大程度上受训练群体规模的影响（Goddard和Hayes 2009）。然而，在动物育种实践中，有时很难获得较大的训练群体。 例如，由于资本、管理等原因，牧场中具有基因型信息的荷斯坦牛数量往往较少。大规模个体的基因分型成本仍然相当高。对此，一种解决方案是进行联合育种，以扩大训练群体并进一步提高GEBV的准确性。",
-             style = 'color: grey;'),
-     br(),
-
-     imageOutput("pic_pca"),
-     br(),
-
-     tags$li("We test a combined reference population was established with animals from two different populations (TB and XX) of the Yorkshire pig. Differences in 
-             genetic background (Figure A) were evident between the two populations and the accuracies of predictions using the merged population and the single population were compared (Figure B). 
-             Our results confirmed that using an admixed reference population is meaningful for joint breeding."),
-     tags$li("我们测试了由约克夏猪的两个不同群体（TB和XX）组成的联合参考群体。 两个群体在遗传背景上（图A）存在显著差异，并比较了合并群体和单一群体的预测准确性（图B）。 我们的结果证实，使用混合参考群体对于联合育种是有意义的。",
-             style = 'color: grey;'),
-     br(),
-
-     div(tags$b("Large Reference Population and Corresponding Traits", style='font-size:25px;')),
-     br(),
-
-     tags$li("We have 3847 reference populations with genome-wide information. They come from Guangming Ranch across China, and they share the same characteristics as the Chinese Holstein cattle genome. 
-             At the same time, we also have matching phenotype group information, including milk yield, milk protein, DHI, somatic cell score, body type score, limb and hoof character score, birth spacing, service life 
-             and many other traits you care about. With the help of such a large phenotype group and genome data, after you upload your phenotype group and genome files, you can get very accurate trait prediction results 
-             to help you decide the leaving or staying issue of each bull."),
-     tags$li("我们拥有3847个具有全基因组信息的参考群体。 它们来自中国各地的光明牧场，并且具有与中国荷斯坦牛基因组相同的特征。同时，我们还拥有匹配的表型组信息，包括产奶量、乳蛋白、DHI、体细胞评分、体型评分、肢体和蹄部评分、产犊间隔、使用寿命等您关心的多种性状。凭借如此庞大的表型组和基因组数据，在您上传表型组和基因组文件后，您可以获得非常准确的性状预测结果，帮助您决定每头公牛的去留问题。",
-             style = 'color: grey;'),
-     br(),
-
-     imageOutput("pic_cor"),
-     br(),
-
-     div(tags$b("Predict CPI and select according to CPI", style='font-size:25px;')),
-     br(),
-
-     tags$li("Our database contains all the required traits for calculating the CPI of Holstein cattle. CPI index is applicable to domestic progeny testing and verification bulls with daughter production traits 
-              and daughter body type identification results that are routinely evaluated in China. At the same time, we can also calculate the GCPI index. If you want to select bulls according to an index, 
-              we can calculate the CPI and GCPI of the individual bulls you uploaded (genome sequencing information is required)."),
-     tags$li("我们的数据库包含计算荷斯坦牛CPI所需的所有性状。CPI指数适用于国内子代测试和验证公牛，其女儿的生产性状和体型鉴定结果在中国被常规评估。同时，我们还可以计算GCPI指数。如果您想根据指数选择公牛，我们可以计算您上传的公牛的CPI和GCPI（需要基因组测序信息）。",
-             style = 'color: grey;'),
-     br(),
-
-     imageOutput("pic_joint"),
-     br()
-   )
-),
-
-column(width = 12,align="center",
-       style = "height:50px;color:white;width:105%;background-color: #2c3e50;margin-left:-15px;margin-top:180px", 
-       h6("Copyright 2022 College of Agriculture and Biology, ShangHaiJiaoTong University. 800# Dongchuan Road, Shanghai, China. E-mail: panyuchun1963@aliyun.com. all rights reserved."),
-       
-        )
-
-
 )

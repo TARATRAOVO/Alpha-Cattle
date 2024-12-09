@@ -1,0 +1,4 @@
+ARS-UCD1.2 bosTau9
+UMD_3.1.1 bosTau8
+Btau_4.6.1 bosTau7
+Bos_taurus_UMD_3.1 bosTau6

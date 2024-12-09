@@ -1,68 +1,141 @@
-# 在脚本的开头加载库
+# 加载必要的库
 library(vcfR)
 library(stringr)
+library(data.table) # 用于更快的数据处理
 
 # 定义一个函数来读取VCF文件并提取基因型矩阵
 read_vcf_to_matrix <- function(vcf_file_path) {
-  # 读取VCF文件
-  vcf <- read.vcfR(vcf_file_path)
-  
-  # 提取基因型数据（GT字段）
-  genotype_matrix <- extract.gt(vcf, element = "GT", as.numeric = FALSE)
-  
-  # 将基因型数据转换为矩阵
-  genotype_matrix <- as.matrix(genotype_matrix)
-  
-  # 返回矩阵
-  return(genotype_matrix)
+  # 验证文件是否存在
+  if (!file.exists(vcf_file_path)) {
+    stop("VCF文件不存在：", vcf_file_path)
+  }
+
+  # 使用tryCatch处理可能的错误
+  tryCatch(
+    {
+      # 读取VCF文件
+      vcf <- read.vcfR(vcf_file_path, verbose = FALSE)
+
+      # 添加基本信息验证
+      message(sprintf("VCF文件包含 %d 个变异位点", nrow(vcf@fix)))
+      message(sprintf("VCF文件包含 %d 个样本", ncol(vcf@gt) - 1))
+
+      # 提取基因型数据（GT字段）
+      genotype_matrix <- extract.gt(vcf, element = "GT", as.numeric = FALSE)
+
+      # 验证基因型矩阵
+      message("基因型矩阵维度:")
+      message(paste(dim(genotype_matrix), collapse = " x "))
+
+      # 将基因型数据转换为矩阵
+      genotype_matrix <- as.matrix(genotype_matrix)
+
+      # 构造行名并验证
+      chr <- getCHROM(vcf)
+      pos <- getPOS(vcf)
+      rownames(genotype_matrix) <- paste(chr, pos, sep = "_")
+
+      message("前几个位点的染色体号:")
+      message(paste(head(chr), collapse = ", "))
+      message("前几个位点的位置:")
+      message(paste(head(pos), collapse = ", "))
+
+      return(genotype_matrix)
+    },
+    error = function(e) {
+      stop("读取VCF文件时发生错误：", e$message)
+    }
+  )
 }
 
-# 
-
-# 定义一个函数来计算每个位点的REF百分比
-calculate_ref_percent <- function(genotype_matrix) {
-  # 获取矩阵的行数（即位点数）
-  num_loci <- nrow(genotype_matrix)
+# 修改计算单个位点REF比例的函数
+calculate_single_position_ref_percent <- function(vcf_file_path, chromosome, position) {
+  # 构造临时输出文件路径
+  output_file <- tempfile(pattern = "position_", fileext = ".vcf")
   
-  # 初始化向量存储每个位点的REF百分比
-  ref_percent <- numeric(num_loci)
+  # 构造tabix命令
+  tabix_command <- sprintf("tabix %s %s:%s-%s > %s",
+                          vcf_file_path,
+                          chromosome,
+                          position,
+                          position,
+                          output_file)
   
-  # 遍历每个位点，计算REF等位基因的百分比
-  for (i in 1:num_loci) {
-    # 获取当前位点的所有样本基因型
-    genotypes <- genotype_matrix[i, ]
-    
-    # 统计REF等位基因（0）的出现次数，参考等位基因可以是"0|0", "0/0", "0|1", "0/1"
-    ref_count <- sum(genotypes == "0|0" | genotypes == "0/0" | genotypes == "0|1" | genotypes == "0/1")
-    
-    # 计算REF百分比 (参考等位基因出现的次数 / 总样本数 * 100)
-    ref_percent[i] <- (ref_count / length(genotypes)) * 100
+  # 执行tabix命令
+  system_result <- system(tabix_command)
+  
+  if (system_result != 0) {
+    warning(sprintf("tabix提取位点失败：%s:%s", chromosome, position))
+    return(NA)
   }
   
-  # 返回REF百分比
-  return(ref_percent)
+  # 读取提取的VCF文件
+  tryCatch({
+    vcf_content <- readLines(output_file)
+    if (length(vcf_content) == 0) {
+      message(sprintf("位点 %s:%s 未找到数据", chromosome, position))
+      return(NA)
+    }
+    
+    # 解析VCF行
+    fields <- strsplit(vcf_content[length(vcf_content)], "\t")[[1]]
+    genotypes <- fields[10:length(fields)]  # 从第10列开始是基因型数据
+    
+    # 计算REF比例
+    ref_count <- sum(genotypes %in% c("0|0", "0/0", "0|1", "1|0", "0/1", "1/0"))
+    total_count <- length(genotypes)
+    ref_percent <- (ref_count / total_count) * 100
+    
+    message(sprintf("位点 %s:%s 的REF比例: %.2f%%", chromosome, position, ref_percent))
+    return(ref_percent)
+    
+  }, error = function(e) {
+    message(sprintf("处理位点 %s:%s 时发生错误: %s", chromosome, position, e$message))
+    return(NA)
+  }, finally = {
+    # 清理临时文件
+    if (file.exists(output_file)) {
+      file.remove(output_file)
+    }
+  })
 }
 
-# 定义一个函数来查询特定位点的REF百分比
-query_ref_percent <- function(ref_percent, chromosome, position) {
-  # 构造位点名称
-  locus_name <- paste(chromosome, position, sep = "_")
+# 修改查询函数
+query_ref_percent <- function(vcf_file_path, chromosome, position) {
+  message(sprintf("查询位点: %s:%s", chromosome, position))
+  result <- calculate_single_position_ref_percent(vcf_file_path, chromosome, position)
   
-  # 检查位点名称是否存在于ref_percent向量的名称中
-  if (locus_name %in% names(ref_percent)) {
-    return(ref_percent[locus_name])
+  if (!is.na(result)) {
+    message(sprintf("找到位点，REF比例为: %.2f%%", result))
   } else {
-    return(NA)  # 如果位点不在ref_percent中，返回NA
+    message(sprintf("位点 %s:%s 未找到或处理失败", chromosome, position))
   }
+  
+  return(result)
 }
 
-# # 示例调用函数
-# vcf_file <- "path_to_your_vcf_file.vcf"  # 替换为实际VCF文件路径
+# 修改批量查询函数
+batch_query_ref_percent <- function(vcf_file_path, query_df) {
+  required_cols <- c("Chr.", "start")
+  if (!all(required_cols %in% colnames(query_df))) {
+    stop("查询数据框必须包含 'Chr.' 和 'start' 列")
+  }
+  
+  results <- sapply(1:nrow(query_df), function(i) {
+    query_ref_percent(vcf_file_path, query_df$Chr.[i], query_df$start[i])
+  })
+  
+  return(results)
+}
+
+# 使用示例：
+# vcf_file <- "path_to_your_vcf_file.vcf"
 # genotype_matrix <- read_vcf_to_matrix(vcf_file)
-
-# # 计算每个位点的REF百分比
 # ref_percent <- calculate_ref_percent(genotype_matrix)
-
-# # 查询特定位点的REF百分比
+#
+# # 单个查询
 # specific_ref_percent <- query_ref_percent(ref_percent, "chr1", 12345)
-# print(specific_ref_percent)
+#
+# # 批量查询
+# snp_info <- read.csv("data_base/meg_snp_info/snp_info.csv")
+# batch_results <- batch_query_ref_percent(ref_percent, snp_info)

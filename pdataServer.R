@@ -38,19 +38,15 @@ pdataServer <- function(input, output, session) {
       } else {
         name_filter <- input$pdata_colname
       }
-      test <- dat %>% 
-        summarise(across(
-          .cols = name_filter,
-          .fns = list(mean = mean, sd = sd), na.rm = TRUE
-        ))
+      test <- dat[, lapply(.SD, function(x) list(mean = mean(x, na.rm = TRUE), sd = sd(x, na.rm = TRUE))), .SDcols = name_filter]
       for (i in name_filter) {
-        a <- select(test, paste0(i, "_mean")) - input$pdata_sd * select(test, paste0(i, "_sd"))
-        b <- select(test, paste0(i, "_mean")) + input$pdata_sd * select(test, paste0(i, "_sd"))
-        dat[[i]][(select(dat, i) < a[[1]] | select(dat, i) > b[[1]])] <- NA
+        a <- test[[i]]$mean - input$pdata_sd * test[[i]]$sd
+        b <- test[[i]]$mean + input$pdata_sd * test[[i]]$sd
+        dat[[i]][(dat[[i]] < a | dat[[i]] > b)] <- NA
       }
 
       if (input$pdata_FilterNA == "Yes") {
-        dat <- dat %>% filter(!across(name_filter, .fns = is.na))
+        dat <- dat[!Reduce(`|`, lapply(name_filter, function(x) is.na(dat[[x]])))]
       }
     }
 
@@ -59,7 +55,7 @@ pdataServer <- function(input, output, session) {
 
   # 数据表渲染 - Limit to first 50 rows
   output$pdata_dat <- DT::renderDataTable({
-    dat <- select(pdata_dat(), pdata_name())
+    dat <- as.data.frame(pdata_dat()[, pdata_name(), drop = FALSE])  # 转换为 data.frame
     head(dat, 50)  # Show only the first 50 rows
   })
 
@@ -80,8 +76,7 @@ pdataServer <- function(input, output, session) {
 
   # 直方图渲染
   output$pdata_plot <- renderCombineWidgets({
-    plot_dat <- pdata_dat() %>% 
-      select(pdata_name()) %>% 
+    plot_dat <- as.data.frame(pdata_dat()[, pdata_name(), drop = FALSE]) %>%  # 转换为 data.frame
       select_if(is.numeric)
     plist <- lapply(names(plot_dat), function(x) {
       ggplotly(ggplot(plot_dat, aes_string(x)) +
