@@ -1,0 +1,13 @@
+[2025-01-08 16:22:28] [INFO] Submit button clicked
+[2025-01-08 16:22:32] [INFO] Confirmation dialog accepted
+[2025-01-08 16:22:32] [INFO] Task info - ID: 9606_impute, File: BOVG100V1_Chr1.vcf.gz
+[2025-01-08 16:22:32] [INFO] Parameters saved to /srv/shiny-server/data/temp/9606_impute/par.RData
+[2025-01-08 16:22:32] [INFO] Prepared command: python3 /srv/shiny-server/data_base/imputation/run_beagle_imputation.py --vcf '/srv/shiny-server/data/uploads/202501/9606_impute/BOVG100V1_Chr1.vcf.gz' --out '/srv/shiny-server/data/results/202501/9606_impute/imputed' --ref-dir '/srv/shiny-server/data_base/imputation' --threads 4 2>&1 | tee '/srv/shiny-server/data/temp/9606_impute/imputation.log'
+[2025-01-08 16:22:32] [INFO] Script created at /srv/shiny-server/data/temp/9606_impute/run_imputation.sh
+[2025-01-13 09:30:45] [INFO] Submit button clicked
+[2025-01-13 09:30:47] [INFO] Confirmation dialog accepted
+[2025-01-13 09:30:47] [INFO] Task info - ID: 9666_impute, File: BOVG100V1_Chr1.vcf.gz
+[2025-01-13 09:30:47] [INFO] Parameters saved to /srv/shiny-server/data/temp/9666_impute/par.RData
+[2025-01-13 09:30:47] [INFO] Prepared command: nohup python3 /srv/shiny-server/data_base/imputation/run_beagle_imputation.py --vcf '/srv/shiny-server/data/uploads/202501/9666_impute/BOVG100V1_Chr1.vcf.gz' --out '/srv/shiny-server/data/results/202501/9666_impute/imputed' --ref-dir '/srv/shiny-server/data_base/imputation' --threads 4 > '/srv/shiny-server/data/temp/9666_impute/imputation.log' 2>&1 &
+[2025-01-13 09:30:47] [INFO] Script created at /srv/shiny-server/data/temp/9666_impute/run_imputation.sh
+[2025-01-13 09:30:47] [INFO] Imputation script executed in background

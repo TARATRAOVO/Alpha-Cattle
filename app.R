@@ -24,6 +24,20 @@ library(dygraphs)
 library(manipulateWidget)
 library(shinyLP)
 
+# Source utility functions
+source("modules/utils.R")
+
+# Source module files
+source("modules/home/homePanel.R")
+source("modules/impute/imputePanel.R")
+source("modules/phe/phePanel.R")
+source("modules/gs/gsPanel.R")
+source("modules/cpi/cpiPanel.R")
+source("modules/jgs/jgsPanel.R")
+source("modules/jcpi/jcpiPanel.R")
+source("modules/pdata/pdataPanel.R")
+source("modules/doc/docPanel.R")
+source("modules/meg/megPanel.R")
 
 options(shiny.maxRequestSize = 10 * 1024^3)
 dir.create("./temp", showWarnings = F)
@@ -35,69 +49,45 @@ path_jgs <<- paste0("temp/", task, "_jgs")
 path_cpi <<- paste0("temp/", task, "_cpi")
 path_jcpi <<- paste0("temp/", task, "_jcpi")
 
-
-demo_gs_phe_dat <<- data.frame(
-  ID = paste0("IND", 1:6),
-  Mean = rep(1, 6),
-  Herd = c(rep(1, 3), rep(2, 3)),
-  YearSeason = rep(1:3, 2),
-  Sex = sample(c("F", "M"), 6, replace = T),
-  Parity = sample(1:3, 6, replace = T),
-  Trait1 = abs(round(rnorm(6, 0, 1), 2)),
-  Trait2 = abs(round(rnorm(6, 10, 100), 2))
+# UI text definitions
+ui_text <- list(
+  cn = list(
+    features = "功能特点",
+    phenotype = "表型处理",
+    phenotype_desc = "用户可以快速过滤数据并处理表型信息。",
+    genotype = "基因型处理",
+    genotype_desc = "高效的基因型数据处理与分析。",
+    prediction = "基因组预测",
+    prediction_desc = "先进的基因组预测和选择算法。",
+    analysis = "数据分析",
+    analysis_desc = "全面的统计分析和可视化工具。",
+    learn_more = "了解更多",
+    home = "首页",
+    genomic_selection = "基因组选择",
+    joint_genomic_selection = "联合基因组选择",
+    phenotype_data = "表型数据",
+    documentation = "文档",
+    major_effect_gene = "主效基因"
+  ),
+  en = list(
+    features = "Our Features",
+    phenotype = "Phenotype Processing",
+    phenotype_desc = "Users can quickly filter their data and process phenotypic information.",
+    genotype = "Genotype Processing",
+    genotype_desc = "Efficient processing and analysis of genotype data.",
+    prediction = "Genomic Prediction",
+    prediction_desc = "Advanced algorithms for genomic prediction and selection.",
+    analysis = "Data Analysis",
+    analysis_desc = "Comprehensive tools for statistical analysis and visualization.",
+    learn_more = "Learn More",
+    home = "Home",
+    genomic_selection = "Genomic Selection",
+    joint_genomic_selection = "Joint Genomic Selection",
+    phenotype_data = "Phenotype Data",
+    documentation = "Documentation",
+    major_effect_gene = "Major Effect Gene"
+  )
 )
-
-demo_gs_ped_dat <<- data.frame(
-  ID = paste0("IND", 1:6),
-  Sire = c("<NA>", "<NA>", "IND1", "IND1", "IND3", "IND3"),
-  Dam = c("<NA>", "<NA>", "<NA>", "IND2", "IND4", "IND4"),
-  Order = 1:6
-)
-
-demo_gs_fam_dat <<- data.frame(
-  ID1 = paste0("IND", 1:6),
-  ID2 = paste0("IND", 1:6),
-  V3 = 0, V4 = 0, V5 = 0, V6 = -9
-)
-
-demo_gs_var_dat <<- data.frame(V1 = c(10, 20), V2 = c(5, 3), V3 = c(40, 80))
-
-traits_symbol_table_dat <<- data.frame(
-  Trait = c("产奶量305天", "乳脂率", "乳蛋白率", "体型总分", "泌乳系统", "肢蹄", "体细胞评分"),
-  Symbol = c("Milk", "Fatpct", "Propct", "Type", "MS", "FL", "SCS"),
-  Type = c("Milk Production Trait", "Milk Production Trait", "Milk Production Trait", "Body Shape Trait", "Body Shape Trait", "Body Shape Trait", "Milk Production Trait")
-)
-
-demo_trait_type1_dat <<- data.frame(
-  ID = paste0("IND", 1:6),
-  Mean = rep(1, 6),
-  Herd = c(rep(1, 3), rep(2, 3)),
-  YearSeason = rep(1:3, 2),
-  Parity = sample(1:3, 6, replace = T),
-  Age = c(27, 15, 18, 25, 35, 32),
-  Milk = c(670, 690, 720, 750, 780, 800),
-  Fatpct = c(0.24, 0.27, 0.30, 0.33, 0.36, 0.39),
-  Propct = c(2.6, 2.8, 3.0, 3.2, 3.4, 3.6),
-  Type = c(5, 6, 7, 8, 9, 10),
-  MS = c(5, 6, 7, 8, 9, 10),
-  FL = c(5, 6, 7, 8, 9, 10),
-  SCS = c(5, 6, 7, 8, 9, 10)
-)
-
-demo_trait_type2_dat <<- data.frame(
-  ID = paste0("IND", 1:6),
-  Mean = rep(1, 6),
-  Herd = c(rep(1, 3), rep(2, 3)),
-  YearSeason = rep(1:3, 2),
-  Parity = sample(1:3, 6, replace = T),
-  Age = c(27, 15, 18, 25, 35, 32),
-  Milk = c(670, 690, 720, 750, 780, 800),
-  Fatpct = c(0.24, 0.27, 0.30, 0.33, 0.36, 0.39),
-  Propct = c(2.6, 2.8, 3.0, 3.2, 3.4, 3.6),
-  SCS = c(5, 6, 7, 8, 9, 10)
-)
-
-
 
 mod_comp_box <<- function(id, label, title, content, placement = "right", choices = colnames(demo_gs_phe_dat), single = FALSE) {
   if (!single) {
@@ -329,15 +319,8 @@ cpi_method_check <<- modalDialog(
 )
 
 
-source("homePanel.R")
-source("imputePanel.R")
-source("phePanel.R")
-source("gsPanel.R")
-source("cpiPanel.R")
-
-
 gsMenu <- navbarMenu(
-  title = "Genomic Selection",
+  title = uiOutput("gsMenuTitle"),
   icon = icon("dna"),
   imputePanel,
   phePanel,
@@ -345,71 +328,246 @@ gsMenu <- navbarMenu(
   cpiPanel
 )
 
-source("jgsPanel.R")
-source("jcpiPanel.R")
-source("pdataPanel.R")
-source("docPanel.R")
-source("megPanel.R")
-
+# Source module files with correct paths
+source("modules/jgs/jgsPanel.R")
+source("modules/jcpi/jcpiPanel.R")
+source("modules/pdata/pdataPanel.R")
+source("modules/doc/docPanel.R")
+source("modules/meg/megPanel.R")
 
 jgsMenu <- navbarMenu(
-  title = "Joint Genomic Selection",
+  title = uiOutput("jgsMenuTitle"),
   icon = icon("mixcloud"),
   jgsPanel,
   jcpiPanel
 )
 
-ui <- navbarPage(
-  id = "tabs",
-  title = span(
-    "Alpha-Cattle",
-    style = "font-size:30px;margin-right:50px"
-  ),
-  position = "fixed-top",
-  header = tagList(
-    useShinydashboard(),
-    useShinydashboardPlus(),
-    use_waiter(),
-    useShinyjs(),
-    # extendShinyjs(text = "shinyjs.refresh = function() { location.reload(); }", functions = c("pageCol")),
-    # setBackgroundColor(color = c("ghostwhite")),
-    tags$head(
-      tags$style(HTML(
-        " .navbar-fixed-top{
-        display: flex;
-        }
-        .navbar-brand {
-    FONT-VARIANT: JIS04;
-    line-height: 0.6;
-}"
-      )),
-      tags$link(rel = "stylesheet", type = "text/css", href = "styles.css"),
-      tags$style("@import url(https://use.fontawesome.com/releases/v6.1.1/css/all.css);")
+# 添加全局变量用于存储语言状态
+language_state <- reactiveVal("cn")
+
+ui <- tagList(
+  # Language Switch Button
+  div(
+    class = "language-switch",
+    actionButton(
+      inputId = "switchLanguage",
+      label = "中文/EN",
+      class = "language-btn"
     )
   ),
-  theme = shinythemes::shinytheme(theme = "flatly"),
-  homePanel,
-  gsMenu,
-  jgsMenu,
-  pdataPanel,
-  megPanel,
-  docPanel
+  navbarPage(
+    id = "tabs",
+    title = span(
+      "Alpha-Cattle",
+      style = "font-size:30px;margin-right:50px"
+    ),
+    position = "fixed-top",
+    header = tagList(
+      use_waiter(),
+      useShinyjs(),
+      tags$head(
+        tags$style(HTML("
+          .navbar-fixed-top{
+            display: flex;
+          }
+          .navbar-brand {
+            FONT-VARIANT: JIS04;
+            line-height: 0.6;
+          }
 
+          /* 调整导航栏标题和图标的样式 */
+          .navbar-nav > li > a {
+            display: flex !important;
+            align-items: center !important;
+            gap: 5px !important;
+          }
 
-  # footer = div(class="footer",
-  #             includeHTML("footer.html")
-  # )
+          /* 确保图标和文字在同一行 */
+          .navbar-nav .fa {
+            margin-right: 5px !important;
+            display: inline-block !important;
+            vertical-align: middle !important;
+          }
+
+          /* 调整下拉菜单的样式 */
+          .dropdown-menu {
+            margin-top: 0 !important;
+          }
+
+          /* 确保标题文字和图标垂直居中 */
+          .shiny-html-output {
+            display: inline-block !important;
+            vertical-align: middle !important;
+          }
+
+          /* 调整语言切换按钮的位置 */
+          .language-switch {
+            position: fixed !important;  /* 改为 fixed */
+            top: 60px !important;
+            right: 20px;
+            z-index: 1001 !important;  /* 确保按钮始终在最上层 */
+          }
+
+          /* 美化语言切换按钮 */
+          .language-btn {
+            background: white;
+            border: 1px solid #ddd;
+            padding: 5px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            color: #2c3e50;
+            font-weight: 500;
+          }
+
+          .language-btn:hover {
+            background: #f8f9fa;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+            transform: translateY(-1px);
+            color: #1a252f;
+          }
+        ")),
+        tags$link(rel = "stylesheet", type = "text/css", href = "styles.css"),
+        tags$style("@import url(https://use.fontawesome.com/releases/v6.1.1/css/all.css);")
+      )
+    ),
+    theme = shinythemes::shinytheme(theme = "flatly"),
+    tabPanel(
+      title = uiOutput("homeTitle"),
+      icon = icon("home"),
+      homePanel
+    ),
+    gsMenu,
+    jgsMenu,
+    tabPanel(
+      title = uiOutput("pdataTitle"),
+      icon = icon("table"),
+      pdataPanel
+    ),
+    tabPanel(
+      title = uiOutput("megTitle"),
+      icon = icon("dna"),
+      megPanel
+    ),
+    tabPanel(
+      title = uiOutput("docTitle"),
+      icon = icon("book"),
+      docPanel(language_state)
+    )
+  )
 )
 
 server <- function(input, output, session) {
-  source("jgsServer.R")
-  source("gsServer.R")
-  source("pheServer.R")
-  source("imputeServer.R")
-  source("cpiServer.R")
-  source("jcpiServer.R")
-  source("pdataServer.R")
-  source("megServer.R")
+  # 添加新的 UI 输出
+  output$homeTitle <- renderUI({
+    lang <- language_state()
+    ui_text[[lang]]$home
+  })
+
+  output$gsMenuTitle <- renderUI({
+    lang <- language_state()
+    ui_text[[lang]]$genomic_selection
+  })
+
+  output$jgsMenuTitle <- renderUI({
+    lang <- language_state()
+    ui_text[[lang]]$joint_genomic_selection
+  })
+
+  output$pdataTitle <- renderUI({
+    lang <- language_state()
+    ui_text[[lang]]$phenotype_data
+  })
+
+  output$docTitle <- renderUI({
+    lang <- language_state()
+    ui_text[[lang]]$documentation
+  })
+
+  # 添加语言切换处理
+  observeEvent(input$switchLanguage, {
+    current_lang <- language_state()
+    language_state(ifelse(current_lang == "cn", "en", "cn"))
+  })
+
+  # 更新UI文本
+  output$heroSubtitle <- renderUI({
+    lang <- language_state()
+    if (lang == "cn") {
+      p(
+        class = "hero-subtitle",
+        "Alpha-Cattle 提供支持多模式基因组选择、荷斯坦奶牛遗传评估及性状预测的平台与软件。"
+      )
+    } else {
+      p(
+        class = "hero-subtitle",
+        "Alpha-Cattle provides a platform and software to enable multiple modes of genomic selection and Prediction in Holstein Cattles."
+      )
+    }
+  })
+
+  output$learnMoreText <- renderUI({
+    lang <- language_state()
+    ui_text[[lang]]$learn_more
+  })
+
+  output$featuresTitle <- renderUI({
+    lang <- language_state()
+    ui_text[[lang]]$features
+  })
+
+  output$phenotypeTitle <- renderUI({
+    lang <- language_state()
+    ui_text[[lang]]$phenotype
+  })
+
+  output$phenotypeDesc <- renderUI({
+    lang <- language_state()
+    ui_text[[lang]]$phenotype_desc
+  })
+
+  output$genotypeTitle <- renderUI({
+    lang <- language_state()
+    ui_text[[lang]]$genotype
+  })
+
+  output$genotypeDesc <- renderUI({
+    lang <- language_state()
+    ui_text[[lang]]$genotype_desc
+  })
+
+  output$predictionTitle <- renderUI({
+    lang <- language_state()
+    ui_text[[lang]]$prediction
+  })
+
+  output$predictionDesc <- renderUI({
+    lang <- language_state()
+    ui_text[[lang]]$prediction_desc
+  })
+
+  output$analysisTitle <- renderUI({
+    lang <- language_state()
+    ui_text[[lang]]$analysis
+  })
+
+  output$analysisDesc <- renderUI({
+    lang <- language_state()
+    ui_text[[lang]]$analysis_desc
+  })
+
+  # 调用文档页面的服务器逻辑
+  docServer(input, output, session, language_state)
+
+  source("modules/jgs/jgsServer.R", local = TRUE)
+  source("modules/gs/gsServer.R", local = TRUE)
+  source("modules/phe/pheServer.R", local = TRUE)
+  source("modules/impute/imputeServer.R", local = TRUE)
+  source("modules/cpi/cpiServer.R", local = TRUE)
+  source("modules/jcpi/jcpiServer.R", local = TRUE)
+  source("modules/pdata/pdataServer.R", local = TRUE)
+  source("modules/meg/megServer.R", local = TRUE)
 
   server_gs(input, output, session)
   server_jgs(input, output, session)
@@ -473,6 +631,12 @@ server <- function(input, output, session) {
 
   observeEvent(input$btn_cpi_gcpi, {
     updateNavbarPage(session = session, inputId = "tabs", selected = "JointGCPICalculationPage")
+  })
+
+  # 添加主效基因标题输出
+  output$megTitle <- renderUI({
+    lang <- language_state()
+    ui_text[[lang]]$major_effect_gene
   })
 }
 
