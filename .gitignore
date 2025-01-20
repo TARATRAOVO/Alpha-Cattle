@@ -38,6 +38,17 @@ test_data/*.txt
 *.ped
 *.map
 
+# 大型二进制文件
+*.jar
+*.zip
+*.tar.gz
+*.tgz
+*.gz
+*.bz2
+*.xz
+*.7z
+*.rar
+
 # 工具和二进制文件目录
 dmu/
 plink/
@@ -70,3 +81,24 @@ renv.lock
 # 其他
 .httr-oauth
 .httr-oauth-SUSPENDED
+
+# 数据目录
+data/results/
+data/uploads/
+test_data/
+
+# 基因组数据文件
+*.fa
+*.fasta
+*.fai
+*.dict
+*.gff
+*.gff3
+*.gtf
+*.2bit
+*.chain
+*.cram
+*.crai
+*.bam
+*.bai
+*.sam
