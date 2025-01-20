@@ -1,7 +1,72 @@
-dmu/
-log/
-sample-apps/
+# R 相关
+.Rproj.user/
+.Rhistory
+.RData
+.Ruserdata
+*.Rproj
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# 编辑器和IDE文件
+.vscode/
+*.swp
+*.swo
+*~
+
+# 日志文件
+logs/
+*.log
+app.log
+courgette.log
+
+# 临时文件和目录
 temp/
+tmp/
+cache/
+
+# 数据文件
 data_base/
+test_data/*.txt
+*.vcf
+*.vcf.gz
+*.vcf.gz.tbi
+*.bed
+*.bim
+*.fam
+*.ped
+*.map
+
+# 工具和二进制文件目录
+dmu/
+plink/
+picard/
+bcftools/
+beagle/
+conform-gt/
+
+# 项目特定目录
+sample-apps/
 PHR0206_Bt40K_V1.0/
 PHR0225_Bt1K_V2.0/
+
+# 输出文件
+*.pdf
+*.html
+*.docx
+*.xlsx
+*.csv
+
+# 环境配置
+.env
+.env.*
+!.env.example
+
+# R包环境
+renv/
+renv.lock
+
+# 其他
+.httr-oauth
+.httr-oauth-SUSPENDED
